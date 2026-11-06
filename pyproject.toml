@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto-smart-commit"
+dynamic = ["version"]
+description = "pre-commit hook: prefix commit messages with the Jira issue key from the branch name, without automatic #time"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = []
+classifiers = [
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Version Control :: Git",
+]
+
+[project.urls]
+Repository = "https://github.com/davidzach/auto-smart-commit"
+Changelog = "https://github.com/davidzach/auto-smart-commit/blob/main/CHANGELOG.md"
+
+[project.scripts]
+auto-smart-commit = "auto_smart_commit.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "pytest-cov>=6", "ruff>=0.15", "mypy>=1.15"]
+
+[tool.setuptools.dynamic]
+version = { attr = "auto_smart_commit.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "--cov=auto_smart_commit --cov-report=term-missing --cov-fail-under=90"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "PT"]
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
+files = ["src", "tests"]
+mypy_path = "src"

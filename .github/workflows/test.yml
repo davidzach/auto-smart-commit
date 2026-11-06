@@ -1,0 +1,70 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install --group dev .
+      - run: ruff format --check .
+      - run: ruff check .
+      - run: mypy
+
+  pytest:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install --group dev .
+      - run: python -m pytest
+
+  pre-commit:
+    # Installs the hooks the way users do, through pre-commit and this repository's manifest.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install pre-commit
+      - name: Commit through both hooks
+        run: |
+          set -eu
+          git config --global user.email ci@example.com
+          git config --global user.name ci
+          mkdir /tmp/target && cd /tmp/target
+          git init -q -b PROJ-123_login-form
+          cat > .pre-commit-config.yaml <<EOF
+          default_install_hook_types: [commit-msg, prepare-commit-msg]
+          repos:
+            - repo: $GITHUB_WORKSPACE
+              rev: $GITHUB_SHA
+              hooks:
+                - id: auto-smart-commit
+                - id: auto-smart-commit-prefill
+          EOF
+          pre-commit install
+          echo a > a && git add . && git commit -q -m "Add login form"
+          test "$(git log -1 --format=%s)" = "PROJ-123 Add login form"
+          echo b > b && git add b
+          if GIT_EDITOR=true git commit -q; then echo "untouched editor must abort"; exit 1; fi
+          GIT_EDITOR="sed -i '1s/\$/Written in the editor/'" git commit -q
+          test "$(git log -1 --format=%s)" = "PROJ-123 Written in the editor"
+          git log --format=%B

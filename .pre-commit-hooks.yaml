@@ -1,0 +1,17 @@
+- id: auto-smart-commit
+  name: Prefix commit message with Jira issue key
+  description: Put the Jira issue key from the branch name in front of the commit subject. Never adds #time.
+  entry: auto-smart-commit
+  language: python
+  stages: [commit-msg]
+  always_run: true
+  minimum_pre_commit_version: "3.2.0"
+
+- id: auto-smart-commit-prefill
+  name: Prefill Jira issue key in the commit editor
+  description: Optional companion of auto-smart-commit. Shows the issue key in the editor before you type.
+  entry: auto-smart-commit --prefill
+  language: python
+  stages: [prepare-commit-msg]
+  always_run: true
+  minimum_pre_commit_version: "3.2.0"
