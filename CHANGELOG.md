@@ -5,6 +5,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Development tools raised to pytest 9.2, pytest-cov 7.1, ruff 0.17.3 and mypy 2.4.1 (no effect on the hook).
+
 ## [2.0.0] - 2026-11-06
 
 ### Changed
