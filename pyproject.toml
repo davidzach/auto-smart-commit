@@ -25,7 +25,7 @@ Changelog = "https://github.com/davidzach/auto-smart-commit/blob/main/CHANGELOG.
 auto-smart-commit = "auto_smart_commit.cli:main"
 
 [dependency-groups]
-dev = ["pytest>=8", "pytest-cov>=6", "ruff>=0.15", "mypy>=1.15"]
+dev = ["pytest>=8", "pytest-cov>=6", "ruff>=0.15", "mypy>=2.4.1"]
 
 [tool.setuptools.dynamic]
 version = { attr = "auto_smart_commit.__version__" }
